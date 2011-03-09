@@ -18,7 +18,7 @@ namespace ASCOMFocuserDriver
     {
         private Focuser _focuser;
         private string _progID;
-        private string _appID = "ASCOM.OpenFocuser.Focuser";
+        //private string _appID = "ASCOM.OpenFocuser.Focuser";
         private Profile _profile = new Profile();
 
         public MainForm()
@@ -49,11 +49,16 @@ namespace ASCOMFocuserDriver
         {
             if (ConnectButton.Text == "Connect" && _progID != "")
             {
-                _focuser = new Focuser(_progID);
+                if (_focuser == null)
+                {
+                    _focuser = new Focuser(_progID);
+                }
+                _focuser.Link =true;
                 ConnectButton.Text = "Disconnect";
             }
             else
             {
+                _focuser.Link = false;
                 ConnectButton.Text = "Connect";
             }
         }

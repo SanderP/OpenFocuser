@@ -37,28 +37,13 @@ namespace ASCOM.OpenFocuser
 
         private void PositionTimer_Tick(object sender, EventArgs e)
         {
-            if (!_focuser.thePort.IsOpen)
-            {
-                return;
-            }
-            _focuser.thePort.WriteLine("p");
-
-            //_focuser._position = 20;
-            string resp = _focuser.thePort.ReadLine();
-            DbgMsg(resp);
-            string[] parts = resp.Split(' ');
-            if (parts[0] != "P")
-            {
-                DbgMsg("Could not parse response");
-            }
+            if (_focuser.Link)
+                ActualPosition.Text = _focuser.GetPosition().ToString();
             else
-            {
-                _focuser._position = Convert.ToInt16(parts[1]);
-                ActualPosition.Text = parts[1];
-            }
+                ActualPosition.Text = "NC";
         }
 
-        private void DbgMsg(string msg)
+        public void DbgMsg(string msg)
         {
             if (_debugForm == null)
             {
@@ -69,22 +54,7 @@ namespace ASCOM.OpenFocuser
 
         private void GoButton_Click(object sender, EventArgs e)
         {
-            _focuser.thePort.WriteLine("m "+TargetPosition.Value.ToString());
-
-            //_focuser._position = 20;
-            string resp = _focuser.thePort.ReadLine();
-            DbgMsg(resp);
-            string[] parts = resp.Split(' ');
-            if (parts[0] != "M")
-            {
-                DbgMsg("Could not parse response");
-            }
-            else
-            {
-                //_focuser._position = Convert.ToInt16(parts[1]);
-                //ActualPosition.Text = parts[1];
-            }
-
+            _focuser.Move(Convert.ToInt16(TargetPosition.Value));
         }
 
         private void StopButton_Click(object sender, EventArgs e)
@@ -93,46 +63,16 @@ namespace ASCOM.OpenFocuser
             {
                 // stop the focuser
                 StopButton.Text = "Resume";
-                SendCommand("h");
+                _focuser.SendCommand("s");
             }
             else
             {
                 // resume
                 StopButton.Text = "Stop!";
-                SendCommand("r");
+                _focuser.SendCommand("r");
             }
         }
 
-        private string SendCommand(string Cmd)
-        {
-            DbgMsg(String.Concat(">>>", Cmd));
 
-            _focuser.thePort.WriteLine(Cmd);
-
-            string[] in_parts = Cmd.Split(' ');
-
-            string resp = _focuser.thePort.ReadLine();
-            DbgMsg(String.Concat("<<<", resp));
-            string[] out_parts = resp.Split(' ');
-            if (out_parts[0] != (in_parts[0].ToUpper()))
-            {
-                DbgMsg("Could not parse response");
-                return "";
-            }
-            else
-            {
-                if (out_parts.Length > 1)
-                {
-                    if (in_parts.Length > 1 && in_parts[1] != out_parts[1])
-                    {
-                        DbgMsg("Did not receive argument back");
-                    }
-                    return out_parts[1];
-                }
-                else
-                    return "";
-            }
-
-        }
     }
 }

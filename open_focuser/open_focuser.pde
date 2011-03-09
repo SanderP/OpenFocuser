@@ -24,7 +24,7 @@ char  in_buffer[MAXLEN];
 int  temperature = 234;
 unsigned int	position = 0;
 unsigned int	target_position = 0;
-int halt = 0;
+int stop = 0;
 #define VER "Open Focuser 1.0"
 
 AF_Stepper motor(48, 2);
@@ -80,40 +80,53 @@ void loop()
 }
 
 void process_cmd(char* cmd) {
-	if (strcmp(cmd, "v") == 0) {
-		Serial.println(VER);
-	} else if (strcmp(cmd, "t") == 0) {
-		// get temperature
-		Serial.print("T ");
-		Serial.println(temperature);
-	} else if (strcmp(cmd, "p") == 0) {
+	if (strcmp(cmd, "p") == 0) {
 		// get position
 		Serial.print("P ");
 		Serial.println(position);
-	} else if (strcmp(cmd, "a") == 0) {
-		// get target position
-		Serial.print("A ");
-		Serial.println(target_position);
-	} else if (strcmp(cmd, "r") == 0) {
-		// release
-		Serial.println("R");
-		halt = 0;
-	} else if (strcmp(cmd, "h") == 0) {
-		// halt
-		Serial.println("H");
-		halt = 1;
-	} else if (strcmp(cmd, "z") == 0) {
-		// set current as zero, resets target to zero as well
-		Serial.println("Z");
-		target_position = 0;
-		position = 0;
-		write_status();
 	} else if (strncmp(cmd, "m ", 2) == 0) {
 		// move
 		unsigned int temp = atoi(cmd+2);
 		Serial.print("M ");
 		Serial.println(temp);
 		target_position = temp;
+	} else if (strcmp(cmd, "i") == 0) {
+		// is focuser moving?
+		Serial.print("I ");
+		if (stop == 1 || (target_position == position))
+			// no
+			Serial.println(0);
+		else
+			// yes
+			Serial.println(1);
+	} else if (strcmp(cmd, "t") == 0) {
+		// get temperature
+		Serial.print("T ");
+		Serial.println(temperature);
+	} else if (strcmp(cmd, "a") == 0) {
+		// get target position
+		Serial.print("A ");
+		Serial.println(target_position);
+	} else if (strcmp(cmd, "h") == 0) {
+		// halt (ASCOM style)
+		Serial.println("H");
+		target_position = position;
+	} else if (strcmp(cmd, "r") == 0) {
+		// release
+		Serial.println("R");
+		stop = 0;
+	} else if (strcmp(cmd, "s") == 0) {
+		// stop
+		Serial.println("S");
+		stop = 1;
+	} else if (strcmp(cmd, "v") == 0) {
+		Serial.println(VER);
+	} else if (strcmp(cmd, "z") == 0) {
+		// set current as zero, resets target to zero as well
+		Serial.println("Z");
+		target_position = 0;
+		position = 0;
+		write_status();
 	} else {
 		Serial.print('>');
 		Serial.print(cmd);
@@ -122,7 +135,7 @@ void process_cmd(char* cmd) {
 }
 
 void move_focuser() {
-	if (halt == 1) {
+	if (stop == 1) {
 		motor.release();
 		return;
 	}

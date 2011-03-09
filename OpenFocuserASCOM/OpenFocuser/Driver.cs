@@ -70,7 +70,7 @@ namespace ASCOM.OpenFocuser
             if (_config.ComPort != "")
             {
                 thePort.PortName = _config.ComPort;
-                thePort.Open();
+                //thePort.Open();
             }
             thePort.NewLine = "\r\n";
 
@@ -125,45 +125,48 @@ namespace ASCOM.OpenFocuser
 
         public void Halt()
         {
-            // TODO Replace this with your implementation
-            throw new MethodNotImplementedException("Halt");
+            SendCommand("h");
         }
 
         public bool IsMoving
         {
             // TODO Replace this with your implementation
-            get { throw new PropertyNotImplementedException("IsMoving", false); }
+            get { return GetIntegerResponse("i") == 1; }
         }
 
         public bool Link
         {
             // TODO Replace this with your implementation
-            get { throw new PropertyNotImplementedException("Link", false); }
-            set { throw new PropertyNotImplementedException("Link", true); }
+            get { return thePort.IsOpen; }
+            set 
+            {
+                if (value && !thePort.IsOpen)
+                {
+                    thePort.Open();
+                } else if (!value && thePort.IsOpen) {
+                    thePort.Close();
+                }
+            }
         }
 
         public int MaxIncrement
         {
-            // TODO Replace this with your implementation
-            get { throw new PropertyNotImplementedException("MaxIncrement", false); }
+            get { return _config.MaxIncrement; }
         }
 
         public int MaxStep
         {
-            // TODO Replace this with your implementation
-            get { throw new PropertyNotImplementedException("MaxStep", false); }
+            get { return _config.MaxIncrement;  }
         }
 
         public void Move(int val)
         {
             // TODO Replace this with your implementation
-            throw new MethodNotImplementedException("Move");
+            SendCommand("m " + val.ToString());
         }
 
         public int Position
         {
-            // TODO Replace this with your implementation
-            //get { throw new PropertyNotImplementedException("Position", false); }
             get { return _position; }
         }
 
@@ -176,7 +179,6 @@ namespace ASCOM.OpenFocuser
 
         public double StepSize
         {
-            // TODO Replace this with your implementation
             get { return 1; }
         }
 
@@ -189,7 +191,6 @@ namespace ASCOM.OpenFocuser
 
         public bool TempCompAvailable
         {
-            // TODO Replace this with your implementation
             get { return false; }
         }
 
@@ -197,6 +198,72 @@ namespace ASCOM.OpenFocuser
         {
             // TODO Replace this with your implementation
             get { throw new PropertyNotImplementedException("Temperature", false); }
+        }
+
+        #endregion
+
+        #region communications
+
+        public string SendCommand(string Cmd)
+        {
+            if (!Link)
+            {
+                throw new PropertyNotImplementedException("SendCommand: Not connected", false);
+            }
+            theForm.DbgMsg(String.Concat(">>>", Cmd));
+
+            thePort.WriteLine(Cmd);
+
+            string[] in_parts = Cmd.Split(' ');
+
+            string resp = thePort.ReadLine();
+            theForm.DbgMsg(String.Concat("<<<", resp));
+            string[] out_parts = resp.Split(' ');
+            if (out_parts[0] != (in_parts[0].ToUpper()))
+            {
+                theForm.DbgMsg("Could not parse response");
+                return "";
+            }
+            else
+            {
+                if (out_parts.Length > 1)
+                {
+                    if (in_parts.Length > 1 && in_parts[1] != out_parts[1])
+                    {
+                        theForm.DbgMsg("Did not receive argument back");
+                    }
+                    return out_parts[1];
+                }
+                else
+                    return "";
+            }
+
+        }
+
+        public int GetPosition()
+        {
+            _position = GetIntegerResponse("p");
+            return _position;
+        }
+
+        public int GetTargetPosition()
+        {
+            return GetIntegerResponse("a");
+        }
+
+        public int GetIntegerResponse(string cmd)
+        {
+            string resp = SendCommand(cmd);
+            string[] parts = resp.Split(' ');
+            if (parts.Length != 2)
+            {
+                theForm.DbgMsg("Did not receive response argument");
+                return -1;
+            }
+            else
+            {
+                return Convert.ToInt16(parts[1]);
+            }
         }
 
         #endregion
