@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenFocuser", "OpenFocuser\OpenFocuser.csproj", "{F65B16BB-5152-4BB9-A699-F343DC614BB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASCOMFocuserDriver", "ASCOMFocuserDriver\ASCOMFocuserDriver.csproj", "{9E067755-8D39-4EEE-8112-7B176BF38637}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F65B16BB-5152-4BB9-A699-F343DC614BB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F65B16BB-5152-4BB9-A699-F343DC614BB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F65B16BB-5152-4BB9-A699-F343DC614BB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F65B16BB-5152-4BB9-A699-F343DC614BB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E067755-8D39-4EEE-8112-7B176BF38637}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E067755-8D39-4EEE-8112-7B176BF38637}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E067755-8D39-4EEE-8112-7B176BF38637}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E067755-8D39-4EEE-8112-7B176BF38637}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
