@@ -33,7 +33,10 @@ namespace ASCOMFocuserDriver
 
         private void ChooseButton_Click(object sender, EventArgs e)
         {
-            _progID = Focuser.Choose(_progID);
+            ASCOM.Utilities.Chooser _chooser = new Chooser();
+            _chooser.DeviceType = "Focuser";
+            _progID = _chooser.Choose(_progID);
+            _chooser.Dispose();
             ChosenFocuser.Text = _progID;
             //_profile.WriteValue(_appID, "ChosenFocuser", _progID);
             if (_progID == "")

@@ -53,6 +53,7 @@ namespace ASCOM.OpenFocuser
         private Config _config = new Config();
         public int _position = 0;
         public SerialPort thePort;
+        private int refCount = 0;
 
 
         //
@@ -60,11 +61,6 @@ namespace ASCOM.OpenFocuser
         //
         public Focuser()
         {
-            if (theForm == null)
-            {
-                theForm = new MainForm(this, ref _config);
-            }
-            theForm.Show();
             thePort = new SerialPort();
             thePort.BaudRate = 9600;
             if (_config.ComPort != "")
@@ -73,6 +69,8 @@ namespace ASCOM.OpenFocuser
                 //thePort.Open();
             }
             thePort.NewLine = "\r\n";
+
+            string s = this.ToString();
 
             //thePort.WriteLine("hello");
         }
@@ -143,8 +141,15 @@ namespace ASCOM.OpenFocuser
                 if (value && !thePort.IsOpen)
                 {
                     thePort.Open();
+                    if (theForm == null)
+                    {
+                        theForm = new MainForm(this, ref _config);
+                    }
+                    theForm.Show();
+
                 } else if (!value && thePort.IsOpen) {
                     thePort.Close();
+                    theForm.Dispose();
                 }
             }
         }
@@ -254,16 +259,7 @@ namespace ASCOM.OpenFocuser
         public int GetIntegerResponse(string cmd)
         {
             string resp = SendCommand(cmd);
-            string[] parts = resp.Split(' ');
-            if (parts.Length != 2)
-            {
-                theForm.DbgMsg("Did not receive response argument");
-                return -1;
-            }
-            else
-            {
-                return Convert.ToInt16(parts[1]);
-            }
+            return Convert.ToInt16(resp);
         }
 
         #endregion
