@@ -15,7 +15,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartAction>Program</StartAction>
-    <StartProgram>C:\Documents and Settings\Owner.Andromeda\My Documents\astro\open_focuser\OpenFocuserASCOM\ASCOMFocuserDriver\bin\Debug\ASCOMFocuserDriver.exe</StartProgram>
+    <StartProgram>C:\Users\Sander\Documents\code\OpenFocuserASCOM\ASCOMFocuserDriver\bin\Debug\ASCOMFocuserDriver.exe</StartProgram>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <StartAction>Program</StartAction>

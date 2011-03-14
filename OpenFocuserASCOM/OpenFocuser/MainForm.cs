@@ -18,12 +18,15 @@ namespace ASCOM.OpenFocuser
             _config = c;
 
             InitializeComponent();
-            PositionTimer.Enabled = true;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            //int i = 10;
+            if (_focuser.Link)
+            {
+                VersionLabel.Text = _focuser.Version;
+                PositionTimer.Enabled = true;
+            }
         }
 
         private void debugButton_Click(object sender, EventArgs e)
@@ -73,6 +76,15 @@ namespace ASCOM.OpenFocuser
             }
         }
 
+        private void PresetCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        public void EnableUpdateTimer()
+        {
+            PositionTimer.Enabled = true;
+        }
 
     }
 }

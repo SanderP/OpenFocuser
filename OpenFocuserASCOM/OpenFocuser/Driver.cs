@@ -27,8 +27,8 @@ using System.IO.Ports;
 
 
 using ASCOM;
-using ASCOM.Helper;
-using ASCOM.Helper2;
+//using ASCOM.Helper;
+//using ASCOM.Helper2;
 using ASCOM.Interface;
 
 namespace ASCOM.OpenFocuser
@@ -48,7 +48,7 @@ namespace ASCOM.OpenFocuser
         // Driver ID and descriptive string that shows in the Chooser
         //
         public static string s_csDriverID = "ASCOM.OpenFocuser.Focuser";
-        private static string s_csDriverDescription = "OpenFocuser an Arduino based Focuser";
+        private static string s_csDriverDescription = "OpenFocuser, an Arduino based Focuser";
         private MainForm theForm;
         private Config _config = new Config();
         public int _position = 0;
@@ -146,10 +146,11 @@ namespace ASCOM.OpenFocuser
                         theForm = new MainForm(this, ref _config);
                     }
                     theForm.Show();
-
+                    theForm.EnableUpdateTimer();
                 } else if (!value && thePort.IsOpen) {
                     thePort.Close();
                     theForm.Dispose();
+                    theForm = null;
                 }
             }
         }
@@ -206,6 +207,11 @@ namespace ASCOM.OpenFocuser
         }
 
         #endregion
+
+        public string Version
+        {
+            get { return SendCommand("v"); }
+        }
 
         #region communications
 

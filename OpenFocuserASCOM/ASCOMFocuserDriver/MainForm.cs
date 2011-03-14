@@ -19,7 +19,7 @@ namespace ASCOMFocuserDriver
         private Focuser _focuser;
         private string _progID;
         //private string _appID = "ASCOM.OpenFocuser.Focuser";
-        private Profile _profile = new Profile();
+        //private Profile _profile = new Profile();
 
         public MainForm()
         {

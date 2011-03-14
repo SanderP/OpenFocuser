@@ -25,7 +25,7 @@ int  temperature = 234;
 unsigned int	position = 0;
 unsigned int	target_position = 0;
 int stop = 0;
-#define VER "Open Focuser 1.0"
+#define VER "V Open_Focuser_1.0"
 
 AF_Stepper motor(48, 2);
 
@@ -35,23 +35,23 @@ void setup()
 	unsigned int temp;
 	// start serial port at 9600 bps:
 	Serial.begin(9600);
-	delay(1000);
-	Serial.println(VER);
+	//delay(1000);
+	//Serial.println(VER);
 	motor.setSpeed(60);
 	motor.release();
 
 	temp = eeprom_read_word(&init_e_a);
 	if (temp != INIT_EEPROM_VALUE) {
 		eeprom_write_word(&init_e_a, INIT_EEPROM_VALUE);
-		Serial.println("Position initialized to zero");
+		//Serial.println("Position initialized to zero");
 		write_status();
 	} else {
 		position = eeprom_read_word(&position_e_a);
 		target_position = position; // no movement right out of the gates
-		Serial.print("Position read: ");
-		Serial.println(position);
+		//Serial.print("Position read: ");
+		//Serial.println(position);
 	}
-	Serial.println("Ready");
+	//Serial.println("Ready");
 }
 
 void loop()
